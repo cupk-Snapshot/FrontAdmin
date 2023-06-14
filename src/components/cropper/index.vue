@@ -1,139 +1,143 @@
 <template>
-  <div class="cropper-wrapper">
-    <div class="img-box">
-      <img class="cropper-image" :id="imgId" alt="">
-    </div>
-    <div class="right-con">
-      <div v-if="preview" class="preview-box" :id="previewId"></div>
-      <div class="button-box">
-        <slot>
-          <Upload action="image/upload" :before-upload="beforeUpload">
-            <Button style="width: 150px;" type="primary">上传图片</Button>
-          </Upload>
-        </slot>
-        <div v-show="insideSrc">
-          <Button type="primary" @click="rotate">
-            <Icon type="md-refresh" :size="18"/>
-          </Button>
-          <Button type="primary" @click="shrink">
-            <Icon type="md-remove" :size="18"/>
-          </Button>
-          <Button type="primary" @click="magnify">
-            <Icon type="md-add" :size="18"/>
-          </Button>
-          <Button type="primary" @click="scale('X')">
-            <Icon custom="iconfont icon-shuipingfanzhuan" :size="18"/>
-          </Button>
-          <Button type="primary" @click="scale('Y')">
-            <Icon custom="iconfont icon-chuizhifanzhuan" :size="18"/>
-          </Button>
-          <Button type="primary" @click="move(0, -moveStep)">
-            <Icon type="md-arrow-round-up" :size="18"/>
-          </Button>
-          <Button type="primary" @click="move(-moveStep, 0)">
-            <Icon type="md-arrow-round-back" :size="18"/>
-          </Button>
-          <Button type="primary" @click="move(0, moveStep)">
-            <Icon type="md-arrow-round-down" :size="18"/>
-          </Button>
-          <Button type="primary" @click="move(moveStep, 0)">
-            <Icon type="md-arrow-round-forward" :size="18"/>
-          </Button>
-          <Button style="width: 150px;margin-top: 10px;" type="primary" @click="crop">{{ cropButtonText }}</Button>
-        </div>
-      </div>
-    </div>
-  </div>
+	<div>
+		<el-dialog title="更换头像" v-model="state.isShowDialog" width="769px">
+			<div class="cropper-warp">
+				<div class="cropper-warp-left">
+					<img :src="state.cropperImg" class="cropper-warp-left-img" />
+				</div>
+				<div class="cropper-warp-right">
+					<div class="cropper-warp-right-title">预览</div>
+					<div class="cropper-warp-right-item">
+						<div class="cropper-warp-right-value">
+							<img :src="state.cropperImgBase64" class="cropper-warp-right-value-img" />
+						</div>
+						<div class="cropper-warp-right-label">100 x 100</div>
+					</div>
+					<div class="cropper-warp-right-item">
+						<div class="cropper-warp-right-value">
+							<img :src="state.cropperImgBase64" class="cropper-warp-right-value-img cropper-size" />
+						</div>
+						<div class="cropper-warp-right-label">50 x 50</div>
+					</div>
+				</div>
+			</div>
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button @click="onCancel" size="default">取 消</el-button>
+					<el-button type="primary" @click="onSubmit" size="default">更 换</el-button>
+				</span>
+			</template>
+		</el-dialog>
+	</div>
 </template>
 
-<script>
-import Cropper from 'cropperjs'
-import './index.less'
-import 'cropperjs/dist/cropper.min.css'
-export default {
-  name: 'Cropper',
-  props: {
-    src: {
-      type: String,
-      default: ''
-    },
-    preview: {
-      type: Boolean,
-      default: true
-    },
-    moveStep: {
-      type: Number,
-      default: 4
-    },
-    cropButtonText: {
-      type: String,
-      default: '裁剪'
-    }
-  },
-  data () {
-    return {
-      cropper: null,
-      insideSrc: ''
-    }
-  },
-  computed: {
-    imgId () {
-      return `cropper${this._uid}`
-    },
-    previewId () {
-      return `cropper_preview${this._uid}`
-    }
-  },
-  watch: {
-    src (src) {
-      this.replace(src)
-    },
-    insideSrc (src) {
-      this.replace(src)
-    }
-  },
-  methods: {
-    beforeUpload (file) {
-      const reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = (event) => {
-        this.insideSrc = event.srcElement.result
-      }
-      return false
-    },
-    replace (src) {
-      this.cropper.replace(src)
-      this.insideSrc = src
-    },
-    rotate () {
-      this.cropper.rotate(90)
-    },
-    shrink () {
-      this.cropper.zoom(-0.1)
-    },
-    magnify () {
-      this.cropper.zoom(0.1)
-    },
-    scale (d) {
-      this.cropper[`scale${d}`](-this.cropper.getData()[`scale${d}`])
-    },
-    move (...argu) {
-      this.cropper.move(...argu)
-    },
-    crop () {
-      this.cropper.getCroppedCanvas().toBlob(blob => {
-        this.$emit('on-crop', blob)
-      })
-    }
-  },
-  mounted () {
-    this.$nextTick(() => {
-      let dom = document.getElementById(this.imgId)
-      this.cropper = new Cropper(dom, {
-        preview: `#${this.previewId}`,
-        checkCrossOrigin: true
-      })
-    })
-  }
-}
+<script setup lang="ts" name="cropper">
+import { reactive, nextTick } from 'vue';
+import Cropper from 'cropperjs';
+import 'cropperjs/dist/cropper.css';
+
+// 定义变量内容
+const state = reactive({
+	isShowDialog: false,
+	cropperImg: '',
+	cropperImgBase64: '',
+	cropper: '' as RefType,
+});
+
+// 打开弹窗
+const openDialog = (imgs: string) => {
+	state.cropperImg = imgs;
+	state.isShowDialog = true;
+	nextTick(() => {
+		initCropper();
+	});
+};
+// 关闭弹窗
+const closeDialog = () => {
+	state.isShowDialog = false;
+};
+// 取消
+const onCancel = () => {
+	closeDialog();
+};
+// 更换
+const onSubmit = () => {
+	// state.cropperImgBase64 = state.cropper.getCroppedCanvas().toDataURL('image/jpeg');
+};
+// 初始化cropperjs图片裁剪
+const initCropper = () => {
+	const letImg = <HTMLImageElement>document.querySelector('.cropper-warp-left-img');
+	state.cropper = new Cropper(letImg, {
+		viewMode: 1,
+		dragMode: 'none',
+		initialAspectRatio: 1,
+		aspectRatio: 1,
+		preview: '.before',
+		background: false,
+		autoCropArea: 0.6,
+		zoomOnWheel: false,
+		crop: () => {
+			state.cropperImgBase64 = state.cropper.getCroppedCanvas().toDataURL('image/jpeg');
+		},
+	});
+};
+
+// 暴露变量
+defineExpose({
+	openDialog,
+});
 </script>
+
+<style scoped lang="scss">
+.cropper-warp {
+	display: flex;
+	.cropper-warp-left {
+		position: relative;
+		display: inline-block;
+		height: 350px;
+		flex: 1;
+		border: 1px solid var(--el-border-color);
+		background: var(--el-color-white);
+		overflow: hidden;
+		background-repeat: no-repeat;
+		cursor: move;
+		border-radius: var(--el-border-radius-base);
+		.cropper-warp-left-img {
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.cropper-warp-right {
+		width: 150px;
+		height: 350px;
+		.cropper-warp-right-title {
+			text-align: center;
+			height: 20px;
+			line-height: 20px;
+		}
+		.cropper-warp-right-item {
+			margin: 15px 0;
+			.cropper-warp-right-value {
+				display: flex;
+				.cropper-warp-right-value-img {
+					width: 100px;
+					height: 100px;
+					border-radius: var(--el-border-radius-circle);
+					margin: auto;
+				}
+				.cropper-size {
+					width: 50px;
+					height: 50px;
+				}
+			}
+			.cropper-warp-right-label {
+				text-align: center;
+				font-size: 12px;
+				color: var(--el-text-color-primary);
+				height: 30px;
+				line-height: 30px;
+			}
+		}
+	}
+}
+</style>
