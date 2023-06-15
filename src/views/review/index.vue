@@ -17,7 +17,6 @@
 <script setup lang="ts" name="makeTableDemo">
 import { defineAsyncComponent, reactive, ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
-
 // 引入组件
 const Table = defineAsyncComponent(() => import('/@/components/table/index.vue'));
 const TableSearch = defineAsyncComponent(() => import('/@/views/review/search.vue'));
@@ -30,12 +29,13 @@ const state = reactive<TableDemoState>({
 		data: [],
 		// 表头内容（必传，注意格式）
 		header: [
-			{ key: 'name', colWidth: '', title: '应检尽检核酸采样点名称', type: 'text', isCheck: true },
-			{ key: 'address', colWidth: '', title: '详细地址', type: 'text', isCheck: true },
-			{ key: 'phone', colWidth: '', title: '采样点联系电话', type: 'text', isCheck: true },
-			{ key: 'time', colWidth: '', title: '开放时间', type: 'text', isCheck: true },
-			{ key: 'isSupport', colWidth: '', title: '是否支持24小时核酸检测', type: 'text', isCheck: true },
-			{ key: 'image', colWidth: '', width: '70', height: '40', title: '图片描述', type: 'image', isCheck: true },
+			{ key: 'content', colWidth: '', title: '举报内容', type: 'text', isCheck: true },
+			{ key: 'address', colWidth: '', title: '举报位置', type: 'text', isCheck: true },
+			{ key: 'time', colWidth: '', title: '举报时间', type: 'text', isCheck: true },
+			{ key: 'isOpen', colWidth: '', title: '是否公开', type: 'string', isCheck: true },
+			{ key: 'image1', colWidth: '', width: '70', height: '40', title: '举报图片1', type: 'image', isCheck: true },
+      { key: 'image2', colWidth: '', width: '70', height: '40', title: '举报图片2', type: 'image', isCheck: true },
+      { key: 'image3', colWidth: '', width: '70', height: '40', title: '举报图片3', type: 'image', isCheck: true },
 		],
 		// 配置项（必传）
 		config: {
@@ -48,10 +48,10 @@ const state = reactive<TableDemoState>({
 		},
 		// 搜索表单，动态生成（传空数组时，将不显示搜索，注意格式）
 		search: [
-			{ label: '采样点名称', prop: 'name', placeholder: '请输入应检尽检核酸采样点名称', required: true, type: 'input' },
-			{ label: '详细地址', prop: 'address', placeholder: '请输入详细地址', required: false, type: 'input' },
+			{ label: '用户ID', prop: 'uid', placeholder: '请输入用户ID', required: false, type: 'input' },
+			{ label: '举报位置', prop: 'address', placeholder: '请输入详细举报位置', required: false, type: 'input' },
 			{ label: '联系电话', prop: 'phone', placeholder: '请输入采样点联系电话', required: false, type: 'input' },
-			{ label: '开放时间', prop: 'time', placeholder: '请选择', required: false, type: 'date' },
+			{ label: '举报时间', prop: 'time', placeholder: '请选择', required: false, type: 'date' },
 			{
 				label: '支持24小时',
 				prop: 'isSupport',
@@ -83,12 +83,14 @@ const getTableData = () => {
 	for (let i = 0; i < 20; i++) {
 		state.tableData.data.push({
 			id: `123456789${i + 1}`,
-			name: `莲塘别墅广场${i + 1}`,
+      content: `这个路上有${i + 1}辆车乱停，堵路`,
 			address: `中沧公寓中庭榕树下${i + 1}`,
 			phone: `0592-6081259${i + 1}`,
-			time: `6:00 ~ 24:00`,
-			isSupport: `${i % 2 === 0 ? '是' : '否'}`,
-			image:[`https://img2.baidu.com/it/u=417454395,2713356475&fm=253&fmt=auto?w=200&h=200`,`https://img2.baidu.com/it/u=417454395,2713356475&fm=253&fmt=auto?w=200&h=200`] ,
+			time: `2020.02.06 6:00 ~ 24:00`,
+      isOpen: `${i % 2}`,
+      image1:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
+      image2:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
+      image3:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
 		});
 	}
 	// 数据总数（模拟，真实从接口取）

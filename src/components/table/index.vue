@@ -6,6 +6,7 @@
 			v-bind="$attrs"
 			row-key="id"
 			stripe
+      highlight-current-row
 			style="width: 100%"
 			v-loading="config.loading"
 			@selection-change="onSelectionChange"
@@ -22,15 +23,24 @@
 			>
 				<template v-slot="scope">
 					<template v-if="item.type === 'image'">
-						<el-image
-							:style="{ width: `${item.width}px`, height: `${item.height}px` }"
-							:src="scope.row[item.key]"
-							:zoom-rate="1.2"
-							:preview-src-list="[scope.row[item.key]]"
-							preview-teleported
-							fit="cover"
-						/>
+              <el-image
+                  :style="{ width: `${item.width}px`, height: `${item.height}px` }"
+                  :src="scope.row[item.key]"
+                  :zoom-rate="1.2"
+                  :preview-src-list="[scope.row[item.key]]"
+                  preview-teleported
+                  fit="cover"
+              />
+
 					</template>
+          <template v-else-if="item.key === 'isOpen'">
+            <el-switch
+                v-model="scope.row[item.key]"
+                class="mb-2"
+                active-text="公开"
+                inactive-text="不公开"
+            />
+          </template>
 					<template v-else>
 						{{ scope.row[item.key] }}
 					</template>
@@ -38,9 +48,25 @@
 			</el-table-column>
 			<el-table-column label="操作" width="100" v-if="config.isOperate">
 				<template v-slot="scope">
+          <el-button text type="primary" @click="dialogFormVisible = true">审核&nbsp;&nbsp;</el-button>
+
+          <el-dialog v-model="dialogFormVisible" title="Shipping address">
+            <el-radio-group v-model="radio">
+              <el-radio :label="0">审核不通过</el-radio>
+              <el-radio :label="1">审核通过</el-radio>
+            </el-radio-group>
+            <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">
+          确定
+        </el-button>
+      </span>
+            </template>
+          </el-dialog>
 					<el-popconfirm title="确定删除吗？" @confirm="onDelRow(scope.row)">
 						<template #reference>
-							<el-button text type="primary">删除</el-button>
+							<el-button text type="danger">&nbsp;删除</el-button>
 						</template>
 					</el-popconfirm>
 				</template>
@@ -108,7 +134,7 @@
 	</div>
 </template>
 
-<script setup lang="ts" name="netxTable">
+<script setup lang="ts" name="nextTable">
 import { reactive, computed, nextTick, ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import printJs from 'print-js';
@@ -117,7 +143,7 @@ import Sortable from 'sortablejs';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import '/@/theme/tableTool.scss';
-
+import { Delete,Edit } from '@element-plus/icons-vue'
 // 定义父组件传过来的值
 const props = defineProps({
 	// 列表内容

@@ -54,7 +54,7 @@ const props = defineProps({
 	// 滚动速率 (px/s)
 	speed: {
 		type: Number,
-		default: () => 100,
+		default: () => 120,
 	},
 	// 是否开启垂直滚动
 	scrollable: {

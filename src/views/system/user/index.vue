@@ -62,10 +62,10 @@
 <script setup lang="ts" name="systemUser">
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
+import request from "/@/utils/request";
 
 // 引入组件
 const UserDialog = defineAsyncComponent(() => import('/@/views/system/user/dialog.vue'));
-
 // 定义变量内容
 const userDialogRef = ref();
 const state = reactive<SysUserState>({
@@ -79,9 +79,19 @@ const state = reactive<SysUserState>({
 		},
 	},
 });
-
+//查询所有用户
+const allUser = () => {
+  return request({
+    url: "/",
+    method: "get",
+  });
+};
 // 初始化表格数据
 const getTableData = () => {
+  // allUser().then(res=>{
+  //   console.log(res.data)
+  //   const data=res.data
+  // })
 	state.tableData.loading = true;
 	const data = [];
 	for (let i = 0; i < 2; i++) {
