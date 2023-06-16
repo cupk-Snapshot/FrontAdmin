@@ -2,7 +2,7 @@
 	<div class="home-container layout-pd">
     <el-row :gutter="15" class="home-card-one mb15">
       <NoticeBar
-          text="🎉🎉🔥基于vue3.x 、Typescript、vite、Element plus等技术，适配手机、平板、pc
+          text="🎉🎉🔥基于Vue3.x 、Typescript、Vite、Element plus等技术，适配手机、平板、pc
 				的后台管理系统，仓库地址：https://github.com/cupk-Snapshot/FrontAdmin"
           leftIcon="iconfont icon-tongzhi2"
           rightIcon="ele-ArrowRight"
