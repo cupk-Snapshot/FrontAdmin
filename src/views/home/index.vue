@@ -59,6 +59,7 @@ import * as echarts from 'echarts';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes';
+import { useChartsApi } from "/@/api/charts";
 
 // 定义变量内容
 const homeLineRef = ref();
@@ -251,6 +252,8 @@ const initEchartsResize = () => {
 };
 // 页面加载时
 onMounted(() => {
+  //const res = useChartsApi(token);
+  //useChartsApi().then(res => {}).catch(err => {}).finally(() => {})
 	initEchartsResize();
 });
 // 由于页面缓存原因，keep-alive
@@ -278,9 +281,6 @@ watch(
 			setTimeout(() => {
 				initPieChart();
 			}, 700);
-			setTimeout(() => {
-				initBarChart();
-			}, 1000);
 		});
 	},
 	{

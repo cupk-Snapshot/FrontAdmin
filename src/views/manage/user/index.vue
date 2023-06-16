@@ -65,7 +65,7 @@ import { ElMessageBox, ElMessage } from 'element-plus';
 import request from "/@/utils/request";
 
 // 引入组件
-const UserDialog = defineAsyncComponent(() => import('/@/views/system/user/dialog.vue'));
+const UserDialog = defineAsyncComponent(() => import('/@/views/manage/user/dialog.vue'));
 // 定义变量内容
 const userDialogRef = ref();
 const state = reactive<SysUserState>({
