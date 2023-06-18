@@ -3,6 +3,8 @@ export default {
 	router: {
 		home: '首页',
 		manageUser: '用户管理',
+		manageGoods:'商品管理',
+		manageOrders:'订单管理',
 		reviewTable: '举报审核',
 		personal: '个人中心',
 		layoutIframeViewOne: '道路交通安全法',

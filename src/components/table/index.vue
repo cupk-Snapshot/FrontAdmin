@@ -49,19 +49,29 @@
 			<el-table-column label="操作" width="100" v-if="config.isOperate">
 				<template v-slot="scope">
           <el-button text type="primary" @click="dialogFormVisible = true">审核&nbsp;&nbsp;</el-button>
-
-          <el-dialog v-model="dialogFormVisible" title="Shipping address">
-            <el-radio-group v-model="radio">
-              <el-radio :label="0">审核不通过</el-radio>
-              <el-radio :label="1">审核通过</el-radio>
-            </el-radio-group>
+          <el-dialog v-model="dialogFormVisible" :modal="false" title="审核">
+            <div class="flex">
+              <p style="font-size: 16px">审核:</p>
+              <el-radio-group v-model="scope.row.pass">
+                <el-radio :label="0">审核不通过</el-radio>
+                <el-radio :label="1">审核通过</el-radio>
+              </el-radio-group>
+            </div>
+            <div class="flex">
+              <p style="font-size: 16px">奖励积分:</p>
+              <el-radio-group v-model="scope.row.point">
+                <el-radio :label="0">0积分</el-radio>
+                <el-radio :label="1">10积分</el-radio>
+                <el-radio :label="2">20积分</el-radio>
+                <el-radio :label="3">25积分</el-radio>
+                <el-radio :label="4">30积分</el-radio>
+              </el-radio-group>
+            </div>
             <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">
-          确定
-        </el-button>
-      </span>
+              <span class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确定</el-button>
+              </span>
             </template>
           </el-dialog>
 					<el-popconfirm title="确定删除吗？" @confirm="onDelRow(scope.row)">
@@ -172,6 +182,7 @@ const props = defineProps({
 const emit = defineEmits(['delRow', 'pageChange', 'sortHeader']);
 
 // 定义变量内容
+const dialogFormVisible = ref(false)
 const toolSetRef = ref();
 const storesThemeConfig = useThemeConfig();
 const { themeConfig } = storeToRefs(storesThemeConfig);

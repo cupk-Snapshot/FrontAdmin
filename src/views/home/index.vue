@@ -252,7 +252,7 @@ const initEchartsResize = () => {
 };
 // 页面加载时
 onMounted(() => {
-  //const res = useChartsApi(token);
+  //todo const res = useChartsApi();
   //useChartsApi().then(res => {}).catch(err => {}).finally(() => {})
 	initEchartsResize();
 });

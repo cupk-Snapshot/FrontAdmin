@@ -18,23 +18,21 @@
 				<span class="login-right-warp-one"></span>
 				<span class="login-right-warp-two"></span>
 				<div class="login-right-warp-mian">
-					<div class="login-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
-					<div class="login-right-warp-main-form">
-						<div v-if="!state.isScan">
-							<el-tabs v-model="state.tabsActiveName">
-								<el-tab-pane :label="$t('message.label.one1')" name="account">
-									<Account />
-								</el-tab-pane>
-								<el-tab-pane :label="$t('message.label.two2')" name="mobile">
-									<Mobile />
-								</el-tab-pane>
-							</el-tabs>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+          <div class="login-right-warp-main-title">{{ getThemeConfig.globalTitle }} 欢迎您！</div>
+          <div class="login-right-warp-main-form">
+            <el-tabs v-model="state.tabsActiveName">
+              <el-tab-pane :label="$t('message.label.one1')" name="account">
+                <Account/>
+              </el-tab-pane>
+              <el-tab-pane :label="$t('message.label.two2')" name="mobile">
+                <Mobile/>
+              </el-tab-pane>
+            </el-tabs>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts" name="loginIndex">
@@ -55,7 +53,6 @@ const storesThemeConfig = useThemeConfig();
 const { themeConfig } = storeToRefs(storesThemeConfig);
 const state = reactive({
 	tabsActiveName: 'account',
-	isScan: false,
 });
 
 // 获取布局配置信息

@@ -29,6 +29,7 @@ const state = reactive<TableDemoState>({
 		data: [],
 		// 表头内容（必传，注意格式）
 		header: [
+      { key: 'reportId', colWidth: '', title: '举报ID', type: 'text', isCheck: true },
 			{ key: 'content', colWidth: '', title: '举报内容', type: 'text', isCheck: true },
 			{ key: 'address', colWidth: '', title: '举报位置', type: 'text', isCheck: true },
 			{ key: 'time', colWidth: '', title: '举报时间', type: 'text', isCheck: true },
@@ -72,7 +73,7 @@ const state = reactive<TableDemoState>({
 			pageSize: 10,
 		},
 		// 打印标题
-		printName: 'vueNextAdmin 表格打印演示',
+		printName: '表格打印演示',
 	},
 });
 
@@ -82,7 +83,7 @@ const getTableData = () => {
 	state.tableData.data = [];
 	for (let i = 0; i < 20; i++) {
 		state.tableData.data.push({
-			id: `123456789${i + 1}`,
+      reportId: `123456789${i + 1}`,
       content: `这个路上有${i + 1}辆车乱停，堵路`,
 			address: `中沧公寓中庭榕树下${i + 1}`,
 			phone: `0592-6081259${i + 1}`,
@@ -91,6 +92,8 @@ const getTableData = () => {
       image1:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
       image2:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
       image3:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
+      pass:0,
+      point:0,
 		});
 	}
 	// 数据总数（模拟，真实从接口取）

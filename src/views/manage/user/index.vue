@@ -18,12 +18,11 @@
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
 				<el-table-column type="index" label="序号" width="60" />
-				<el-table-column prop="userName" label="账户名称" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="userNickname" label="用户昵称" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="roleSign" label="关联角色" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="department" label="部门" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="phone" label="手机号" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="email" label="邮箱" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="sex" label="性别" show-overflow-tooltip></el-table-column>
 				<el-table-column prop="status" label="用户状态" show-overflow-tooltip>
 					<template #default="scope">
 						<el-tag type="success" v-if="scope.row.status">启用</el-tag>
@@ -59,7 +58,7 @@
 	</div>
 </template>
 
-<script setup lang="ts" name="systemUser">
+<script setup lang="ts" name="userManage">
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import request from "/@/utils/request";
@@ -96,12 +95,10 @@ const getTableData = () => {
 	const data = [];
 	for (let i = 0; i < 2; i++) {
 		data.push({
-			userName: i === 0 ? 'admin' : 'test',
 			userNickname: i === 0 ? '我是管理员' : '我是普通用户',
 			roleSign: i === 0 ? 'admin' : 'common',
-			department: i === 0 ? ['vueNextAdmin', 'IT外包服务'] : ['vueNextAdmin', '资本控股'],
+			department: i === 0 ? ['公安局', '一分局'] : ['公安局', '二分局'],
 			phone: '12345678910',
-			email: 'vueNextAdmin@123.com',
 			sex: '女',
 			password: '123456',
 			overdueTime: new Date(),
@@ -126,7 +123,7 @@ const onOpenEditUser = (type: string, row: RowUserType) => {
 };
 // 删除用户
 const onRowDel = (row: RowUserType) => {
-	ElMessageBox.confirm(`此操作将永久删除账户名称：“${row.userName}”，是否继续?`, '提示', {
+	ElMessageBox.confirm(`此操作将永久删除账户：“${row.userNickname}”，是否继续?`, '提示', {
 		confirmButtonText: '确认',
 		cancelButtonText: '取消',
 		type: 'warning',

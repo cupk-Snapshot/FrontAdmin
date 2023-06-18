@@ -27,26 +27,6 @@
 				</template>
 			</el-input>
 		</el-form-item>
-		<el-form-item class="login-animation3">
-			<el-col :span="15">
-				<el-input
-					text
-					maxlength="4"
-					:placeholder="$t('message.account.accountPlaceholder3')"
-					v-model="state.ruleForm.code"
-					clearable
-					autocomplete="off"
-				>
-					<template #prefix>
-						<el-icon class="el-input__icon"><ele-Position /></el-icon>
-					</template>
-				</el-input>
-			</el-col>
-			<el-col :span="1"></el-col>
-			<el-col :span="8">
-				<el-button class="login-content-code" v-waves>1234</el-button>
-			</el-col>
-		</el-form-item>
 		<el-form-item class="login-animation4">
 			<el-button type="primary" class="login-content-submit" round v-waves @click="onSignIn" :loading="state.loading.signIn">
 				<span>{{ $t('message.account.accountBtnText') }}</span>
@@ -80,7 +60,6 @@ const state = reactive({
 	ruleForm: {
 		userName: 'admin',
 		password: '123456',
-		code: '1234',
 	},
 	loading: {
 		signIn: false,
@@ -110,6 +89,7 @@ const onSignIn = async () => {
 		signInSuccess(isNoPower);
 	}
 };
+
 // 登录成功后的跳转
 const signInSuccess = (isNoPower: boolean | undefined) => {
 	if (isNoPower) {

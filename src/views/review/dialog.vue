@@ -85,7 +85,6 @@ import { reactive, ref } from 'vue';
 const emit = defineEmits(['refresh']);
 
 // 定义变量内容
-const userDialogFormRef = ref();
 const state = reactive({
 	ruleForm: {
 		userName: '', // 账户名称
