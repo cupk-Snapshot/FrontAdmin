@@ -7,7 +7,7 @@
 					<div class="personal-user">
 						<div class="personal-user-left">
 							<el-upload class="h100 personal-user-left-upload" action="https://jsonplaceholder.typicode.com/posts/" multiple :limit="1">
-								<img src="https://img2.baidu.com/it/u=1978192862,2048448374&fm=253&fmt=auto&app=138&f=JPEG?w=504&h=500" />
+								<img :src=state.personalForm.avatarUrl />
 							</el-upload>
 						</div>
 						<div class="personal-user-right">
@@ -17,11 +17,11 @@
 									<el-row>
 										<el-col :xs="24" :sm="8" class="personal-item mb6">
 											<div class="personal-item-label">昵称：</div>
-											<div class="personal-item-value">小柒</div>
+											<div class="personal-item-value">{{Session.get('user').nickName}}</div>
 										</el-col>
 										<el-col :xs="24" :sm="16" class="personal-item mb6">
 											<div class="personal-item-label">身份：</div>
-											<div class="personal-item-value">超级管理</div>
+											<div class="personal-item-value">{{Session.get('user').role}}</div>
 										</el-col>
 									</el-row>
 								</el-col>
@@ -29,11 +29,11 @@
 									<el-row>
 										<el-col :xs="24" :sm="8" class="personal-item mb6">
 											<div class="personal-item-label">登录IP：</div>
-											<div class="personal-item-value">192.168.1.1</div>
+											<div class="personal-item-value">127.0.0.1</div>
 										</el-col>
 										<el-col :xs="24" :sm="16" class="personal-item mb6">
 											<div class="personal-item-label">登录时间：</div>
-											<div class="personal-item-value">2021-02-05 18:47:26</div>
+											<div class="personal-item-value">{{ now }}</div>
 										</el-col>
 									</el-row>
 								</el-col>
@@ -68,41 +68,41 @@
 						<el-row :gutter="35">
 							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
 								<el-form-item label="昵称">
-									<el-input v-model="state.personalForm.name" placeholder="请输入昵称" clearable></el-input>
+									<el-input v-model="state.personalForm.nickName" placeholder="请输入昵称" clearable></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
 								<el-form-item label="邮箱">
-									<el-input v-model="state.personalForm.email" placeholder="请输入邮箱" clearable></el-input>
+									<el-input v-model="state.personalForm.idcard" placeholder="请输入身份证号" clearable></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
 								<el-form-item label="签名">
-									<el-input v-model="state.personalForm.autograph" placeholder="请输入签名" clearable></el-input>
+									<el-input v-model="state.personalForm.name" placeholder="请输入姓名" clearable></el-input>
 								</el-form-item>
 							</el-col>
-							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
-								<el-form-item label="职业">
-									<el-select v-model="state.personalForm.occupation" placeholder="请选择职业" clearable class="w100">
-										<el-option label="计算机 / 互联网 / 通信" value="1"></el-option>
-										<el-option label="生产 / 工艺 / 制造" value="2"></el-option>
-										<el-option label="医疗 / 护理 / 制药" value="3"></el-option>
-									</el-select>
-								</el-form-item>
-							</el-col>
+<!--							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">-->
+<!--								<el-form-item label="职业">-->
+<!--									<el-select v-model="state.personalForm.occupation" placeholder="请选择职业" clearable class="w100">-->
+<!--										<el-option label="计算机 / 互联网 / 通信" value="1"></el-option>-->
+<!--										<el-option label="生产 / 工艺 / 制造" value="2"></el-option>-->
+<!--										<el-option label="医疗 / 护理 / 制药" value="3"></el-option>-->
+<!--									</el-select>-->
+<!--								</el-form-item>-->
+<!--							</el-col>-->
 							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
 								<el-form-item label="手机">
-									<el-input v-model="state.personalForm.phone" placeholder="请输入手机" clearable></el-input>
+									<el-input v-model="state.personalForm.phoneNum" placeholder="请输入手机" clearable></el-input>
 								</el-form-item>
 							</el-col>
-							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
-								<el-form-item label="性别">
-									<el-select v-model="state.personalForm.sex" placeholder="请选择性别" clearable class="w100">
-										<el-option label="男" value="1"></el-option>
-										<el-option label="女" value="2"></el-option>
-									</el-select>
-								</el-form-item>
-							</el-col>
+<!--							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">-->
+<!--								<el-form-item label="性别">-->
+<!--									<el-select v-model="state.personalForm.sex" placeholder="请选择性别" clearable class="w100">-->
+<!--										<el-option label="男" value="1"></el-option>-->
+<!--										<el-option label="女" value="2"></el-option>-->
+<!--									</el-select>-->
+<!--								</el-form-item>-->
+<!--							</el-col>-->
 							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 								<el-form-item>
 									<el-button type="primary">
@@ -125,24 +125,29 @@
 import { reactive, computed } from 'vue';
 import { formatAxis } from '/@/utils/formatTime';
 import { newsInfoList, recommendList } from './mock';
+import { Session } from '/@/utils/storage';
+import {data} from "dom7";
 
 // 定义变量内容
 const state = reactive<PersonalState>({
 	newsInfoList,
 	recommendList,
 	personalForm: {
-		name: '',
-		email: '',
-		autograph: '',
-		occupation: '',
-		phone: '',
-		sex: '',
+		// name: '',
+		// email: '',
+		// autograph: '',
+		// occupation: '',
+		// phone: '',
+		// sex: '',
 	},
 });
-
+ state.personalForm=Session.get('user')
 // 当前时间提示语
 const currentTime = computed(() => {
 	return formatAxis(new Date());
+});
+const now = computed(() => {
+  return new Date()
 });
 </script>
 

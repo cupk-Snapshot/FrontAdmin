@@ -9,7 +9,7 @@
 		</el-form-item>
 		<el-form-item class="login-animation2">
 			<el-col :span="15">
-				<el-input text maxlength="4" :placeholder="$t('message.mobile.placeholder2')" v-model="state.ruleForm.code" clearable autocomplete="off">
+				<el-input text maxlength="6" :placeholder="$t('message.mobile.placeholder2')" v-model="state.ruleForm.code" clearable autocomplete="off">
 					<template #prefix>
 						<el-icon class="el-input__icon"><ele-Position /></el-icon>
 					</template>

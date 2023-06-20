@@ -56,7 +56,7 @@
           v-model:current-page="state.page.pageNum"
           v-model:page-size="state.page.pageSize"
           :pager-count="5"
-          :page-sizes="[10, 20, 30]"
+          :page-sizes="[1, 2, 5]"
           :total="config.total"
           layout="total, sizes, prev, pager, next, jumper"
           background
@@ -119,7 +119,9 @@ import Sortable from 'sortablejs';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import '/@/theme/tableTool.scss';
+import {orderApi} from "/@/api/manage/order"
 import { Delete,Edit } from '@element-plus/icons-vue'
+import {goodsApi} from "/@/api/manage/goods";
 // 定义父组件传过来的值
 const props = defineProps({
   // 列表内容
@@ -155,7 +157,7 @@ const { themeConfig } = storeToRefs(storesThemeConfig);
 const state = reactive({
   page: {
     pageNum: 1,
-    pageSize: 10,
+    pageSize: 5,
   },
   selectlist: [] as EmptyObjectType[],
   checkListAll: true,
@@ -192,6 +194,16 @@ const onSelectionChange = (val: EmptyObjectType[]) => {
 };
 // 删除当前项
 const onDelRow = (row: EmptyObjectType) => {
+  const ids=[]
+  ids.push(row.orderId)
+  orderApi().delete(ids).then(res => {
+    if (res.data.code == 200) {
+      ElMessage.success("删除成功")
+    }else {
+      ElMessage.error("删除失败")
+    }
+  });
+
   emit('delRow', row);
 };
 // 分页改变

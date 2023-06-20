@@ -9,18 +9,19 @@ import request from '/@/utils/request';
  */
 export function useLoginApi() {
 	return {
-		signIn: (data: object) => {
+		signIn: (parm: object) => {
 			return request({
-				url: '/user/signIn',
-				method: 'post',
-				data,
+				url: '/oauth/token',
+				method: 'GET',
+				// data:parm,
+				params: parm
 			});
 		},
-		signOut: (data: object) => {
+		signOut: (parm: object) => {
 			return request({
 				url: '/user/signOut',
-				method: 'post',
-				data,
+				method: 'POST',
+				data:parm
 			});
 		},
 	};

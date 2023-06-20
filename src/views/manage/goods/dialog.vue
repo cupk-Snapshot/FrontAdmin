@@ -4,17 +4,21 @@
       <text>商品图片</text>
       <el-upload
           class="avatar-uploader"
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+          action="http://localhost:9955/file/oss/upload"
           name="file"
-          :data='data'
+          :headers=headers
+          :data=data
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
       >
-        <img v-if="state.ruleForm.pic" :src="state.ruleForm.pic" class="avatar" />
-        <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+        <img v-if="state.ruleForm.picUrl" :src="state.ruleForm.picUrl" class="avatar"/>
+        <el-icon v-else class="avatar-uploader-icon">
+          <Plus/>
+        </el-icon>
       </el-upload>
-      <el-form ref="userDialogFormRef" :model="state.ruleForm" size="default" label-width="90px" style="margin-top: 20px">
+      <el-form ref="userDialogFormRef" :model="state.ruleForm" size="default" label-width="90px"
+               style="margin-top: 20px">
         <el-row :gutter="35">
           <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12" class="mb20">
             <el-form-item label="商品描述">
@@ -36,7 +40,9 @@
       <template #footer>
 				<span class="dialog-footer">
 					<el-button @click="onCancel" size="default">取 消</el-button>
-					<el-button type="primary" @click="onSubmit" size="default">{{ state.dialog.submitTxt }}</el-button>
+					<el-button type="primary" @click="onSubmit(state.ruleForm)" size="default">{{
+              state.dialog.submitTxt
+            }}</el-button>
 				</span>
       </template>
     </el-dialog>
@@ -44,19 +50,25 @@
 </template>
 
 <script setup lang="ts" name="systemUserDialog">
-import { reactive, ref } from 'vue';
+import {reactive, ref} from 'vue';
+import {Session} from '/@/utils/storage';
+import {goodsApi} from "/@/api/manage/goods"
+
 
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['refresh']);
 
 // 定义变量内容
+const headers = {
+  'Authorization': 'Bearer ' + Session.get('token')
+}
 const userDialogFormRef = ref();
 const state = reactive({
   ruleForm: {
-    title:'',
-    stocks:'',
-    point:'',
-    pic:''
+    title: '',
+    stocks: '',
+    point: '',
+    picUrl: ''
   },
   deptData: [] as DeptTreeType[], // 部门数据
   dialog: {
@@ -66,13 +78,13 @@ const state = reactive({
     submitTxt: '',
   },
 });
-const data={
-  location:'picture'
+const data = {
+  location: 'picture'
 }
-import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
+import {ElMessage} from 'element-plus'
+import {Plus} from '@element-plus/icons-vue'
 
-import type { UploadProps } from 'element-plus'
+import type {UploadProps} from 'element-plus'
 
 const imageUrl = ref('')
 
@@ -80,7 +92,9 @@ const handleAvatarSuccess: UploadProps['onSuccess'] = (
     response,
     uploadFile
 ) => {
-  state.ruleForm.pic = URL.createObjectURL(uploadFile.raw!)
+  // state.ruleForm.pic = URL.createObjectURL(uploadFile.raw!)
+  state.ruleForm.picUrl = response.data[0]
+  console.log(response.data[0])
 }
 
 const beforeAvatarUpload: UploadProps['beforeUpload'] = (rawFile) => {
@@ -118,8 +132,28 @@ const onCancel = () => {
   closeDialog();
 };
 // 提交
-const onSubmit = () => {
-  closeDialog();
+const onSubmit = (data: object) => {
+  if (state.dialog.title == '修改') {
+    //修改商品信息
+    goodsApi().update(data).then(res => {
+      if (res.data.code == 200) {
+        ElMessage.success("修改成功")
+        closeDialog();
+      } else {
+        ElMessage.error("修改失败")
+      }
+    })
+  } else {
+    //修改商品信息
+    goodsApi().add(data).then(res => {
+      if (res.data.code == 200) {
+        ElMessage.success("添加成功")
+        closeDialog();
+      } else {
+        ElMessage.error("添加失败")
+      }
+    })
+  }
   emit('refresh');
   // if (state.dialog.type === 'add') { }
 };

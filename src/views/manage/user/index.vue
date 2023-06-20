@@ -17,19 +17,38 @@
 				</el-button>
 			</div>
 			<el-table :data="state.tableData.data" v-loading="state.tableData.loading" style="width: 100%">
-				<el-table-column type="index" label="序号" width="60" />
-				<el-table-column prop="userNickname" label="用户昵称" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="roleSign" label="关联角色" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="department" label="部门" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="phone" label="手机号" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="sex" label="性别" show-overflow-tooltip></el-table-column>
-				<el-table-column prop="status" label="用户状态" show-overflow-tooltip>
+<!--				<el-table-column type="index" label="序号" width="60" />-->
+				<el-table-column prop="userId" label="序号" width="60" />
+				<el-table-column prop="nickName" label="用户昵称" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="username" label="用户名" show-overflow-tooltip></el-table-column>
+        <el-table-column
+            prop="avatarUrl"
+            label="用户头像">
+          <template v-slot="scope">
+            <el-image
+                style="width: 100px; height: 100px; margin-bottom:-4px"
+                :src='scope.row.avatarUrl'
+                :zoom-rate="1.2"
+                :preview-src-list="[scope.row.avatarUrl]"
+                preview-teleported
+                fit="cover"
+            >
+            </el-image>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="姓名" show-overflow-tooltip></el-table-column>
+<!--				<el-table-column prop="department" label="部门" show-overflow-tooltip></el-table-column>-->
+				<el-table-column prop="phoneNum" label="手机号" show-overflow-tooltip></el-table-column>
+        <el-table-column prop="idcard" label="身份证" show-overflow-tooltip></el-table-column>
+<!--        <el-table-column prop="sex" label="性别" show-overflow-tooltip></el-table-column>-->
+        <el-table-column prop="sysRoleVo.roleName" label="关联角色" show-overflow-tooltip></el-table-column>
+				<el-table-column prop="isEnable" label="用户状态" show-overflow-tooltip>
 					<template #default="scope">
-						<el-tag type="success" v-if="scope.row.status">启用</el-tag>
+						<el-tag type="success" v-if="scope.row.isEnabled===1">启用</el-tag>
 						<el-tag type="info" v-else>禁用</el-tag>
 					</template>
 				</el-table-column>
-				<el-table-column prop="describe" label="用户描述" show-overflow-tooltip></el-table-column>
+<!--				<el-table-column prop="describe" label="用户描述" show-overflow-tooltip></el-table-column>-->
 				<el-table-column prop="createTime" label="创建时间" show-overflow-tooltip></el-table-column>
 				<el-table-column label="操作" width="100">
 					<template #default="scope">
@@ -62,6 +81,7 @@
 import { defineAsyncComponent, reactive, onMounted, ref } from 'vue';
 import { ElMessageBox, ElMessage } from 'element-plus';
 import request from "/@/utils/request";
+import {userApi} from "/@/api/manage/user"
 
 // 引入组件
 const UserDialog = defineAsyncComponent(() => import('/@/views/manage/user/dialog.vue'));
@@ -93,22 +113,26 @@ const getTableData = () => {
   // })
 	state.tableData.loading = true;
 	const data = [];
-	for (let i = 0; i < 2; i++) {
-		data.push({
-			userNickname: i === 0 ? '我是管理员' : '我是普通用户',
-			roleSign: i === 0 ? 'admin' : 'common',
-			department: i === 0 ? ['公安局', '一分局'] : ['公安局', '二分局'],
-			phone: '12345678910',
-			sex: '女',
-			password: '123456',
-			overdueTime: new Date(),
-			status: true,
-			describe: i === 0 ? '不可删除' : '测试用户',
-			createTime: new Date().toLocaleString(),
-		});
-	}
-	state.tableData.data = data;
-	state.tableData.total = state.tableData.data.length;
+  userApi().all(state.tableData.param.pageNum, state.tableData.param.pageSize).then(res => {
+    state.tableData.total = res.data.data.total
+    state.tableData.data = res.data.data.list
+  })
+	// for (let i = 0; i < 2; i++) {
+	// 	data.push({
+	// 		userNickname: i === 0 ? '我是管理员' : '我是普通用户',
+	// 		roleSign: i === 0 ? 'admin' : 'common',
+	// 		department: i === 0 ? ['公安局', '一分局'] : ['公安局', '二分局'],
+	// 		phone: '12345678910',
+	// 		sex: '女',
+	// 		password: '123456',
+	// 		overdueTime: new Date(),
+	// 		status: true,
+	// 		describe: i === 0 ? '不可删除' : '测试用户',
+	// 		createTime: new Date().toLocaleString(),
+	// 	});
+	// }
+	// state.tableData.data = data;
+	// state.tableData.total = state.tableData.data.length;
 	setTimeout(() => {
 		state.tableData.loading = false;
 	}, 500);
@@ -129,8 +153,16 @@ const onRowDel = (row: RowUserType) => {
 		type: 'warning',
 	})
 		.then(() => {
-			getTableData();
-			ElMessage.success('删除成功');
+      const ids=[]
+      ids.push(row.userId)
+      userApi().delete(ids).then(res => {
+        if (res.data.code == 200) {
+          ElMessage.success("删除成功")
+          getTableData();
+        }else {
+          ElMessage.error("删除失败")
+        }
+      });
 		})
 		.catch(() => {});
 };

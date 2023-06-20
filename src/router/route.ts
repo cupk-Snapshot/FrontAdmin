@@ -89,7 +89,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					isAffix: false,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'iconfont icon-icon-',
+					icon: 'iconfont icon-shenqingkaiban',
 				},
 			},
 			{
@@ -104,7 +104,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					isAffix: false,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'iconfont icon-icon-',
+					icon: 'iconfont icon-caidan',
 				},
 			},
 			{
@@ -119,7 +119,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 					isAffix: false,
 					isIframe: false,
 					roles: ['admin', 'common'],
-					icon: 'iconfont icon-ico_shuju',
+					icon: 'iconfont icon-jiliandongxuanzeqi',
 				},
 			},
 			{

@@ -17,6 +17,7 @@
 <script setup lang="ts" name="makeTableDemo">
 import { defineAsyncComponent, reactive, ref, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
+import {acceptApi} from '/@/api/manage/accpet';
 // 引入组件
 const Table = defineAsyncComponent(() => import('/@/components/table/index.vue'));
 const TableSearch = defineAsyncComponent(() => import('/@/views/review/search.vue'));
@@ -29,14 +30,22 @@ const state = reactive<TableDemoState>({
 		data: [],
 		// 表头内容（必传，注意格式）
 		header: [
-      { key: 'reportId', colWidth: '', title: '举报ID', type: 'text', isCheck: true },
-			{ key: 'content', colWidth: '', title: '举报内容', type: 'text', isCheck: true },
-			{ key: 'address', colWidth: '', title: '举报位置', type: 'text', isCheck: true },
-			{ key: 'time', colWidth: '', title: '举报时间', type: 'text', isCheck: true },
-			{ key: 'isOpen', colWidth: '', title: '是否公开', type: 'string', isCheck: true },
-			{ key: 'image1', colWidth: '', width: '70', height: '40', title: '举报图片1', type: 'image', isCheck: true },
-      { key: 'image2', colWidth: '', width: '70', height: '40', title: '举报图片2', type: 'image', isCheck: true },
-      { key: 'image3', colWidth: '', width: '70', height: '40', title: '举报图片3', type: 'image', isCheck: true },
+      { key: 'acceptId', colWidth:'80', title: '审核ID', type: 'int', isCheck: true },
+      { key: 'userId', colWidth:'80', title: '用户ID', type: 'int', isCheck: true },
+      { key: 'username', colWidth: '90', title: '举报用户', type: 'text', isCheck: true },
+			{ key: 'wfDesc', colWidth: '200', title: '举报内容', type: 'text', isCheck: true },
+			{ key: 'wfType', colWidth: '', title: '违法类型', type: 'text', isCheck: true },
+			{ key: 'wfAddress', colWidth: '', title: '举报位置', type: 'text', isCheck: true },
+			{ key: 'wfTime', colWidth: '', title: '举报时间', type: 'text', isCheck: true },
+      { key: 'pic1Url', colWidth: '', width: '100', height: 'auto', title: '举报图片1', type: 'image', isCheck: true },
+      { key: 'pic2Url', colWidth: '', width: '100', height: 'auto', title: '举报图片2', type: 'image', isCheck: true },
+      { key: 'pic3Url', colWidth: '', width: '100', height: 'auto', title: '举报图片3', type: 'image', isCheck: true },
+      { key: 'hphm', colWidth: '', title: '车牌号码', type: 'text', isCheck: true },
+      { key: 'hpzl', colWidth: '', title: '车牌种类', type: 'text', isCheck: true },
+      { key: 'examineName', colWidth: '', title: '审核人', type: 'text', isCheck: true },
+      { key: 'status', colWidth: '', title: '审核状态', type: 'text', isCheck: true },
+      { key: 'isPublic', colWidth: '180', title: '是否公开' , type: 'int', isCheck: true },
+
 		],
 		// 配置项（必传）
 		config: {
@@ -79,25 +88,30 @@ const state = reactive<TableDemoState>({
 
 // 初始化列表数据
 const getTableData = () => {
-	state.tableData.config.loading = true;
-	state.tableData.data = [];
-	for (let i = 0; i < 20; i++) {
-		state.tableData.data.push({
-      reportId: `123456789${i + 1}`,
-      content: `这个路上有${i + 1}辆车乱停，堵路`,
-			address: `中沧公寓中庭榕树下${i + 1}`,
-			phone: `0592-6081259${i + 1}`,
-			time: `2020.02.06 6:00 ~ 24:00`,
-      isOpen: `${i % 2}`,
-      image1:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
-      image2:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
-      image3:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
-      pass:0,
-      point:0,
-		});
-	}
-	// 数据总数（模拟，真实从接口取）
-	state.tableData.config.total = state.tableData.data.length;
+  state.tableData.config.loading = true;
+  state.tableData.data = [];
+
+  acceptApi().all(state.tableData.param.pageNum, state.tableData.param.pageSize).then(res => {
+    state.tableData.config.total = res.data.data.total
+    state.tableData.data = res.data.data.list
+  })
+	// for (let i = 0; i < 20; i++) {
+	// 	state.tableData.data.push({
+  //     reportId: state.tableData.data,
+  //     content: `这个路上有${i + 1}辆车乱停，堵路`,
+	// 		address: `中沧公寓中庭榕树下${i + 1}`,
+	// 		phone: `0592-6081259${i + 1}`,
+	// 		time: `2020.02.06 6:00 ~ 24:00`,
+  //     isOpen: `${i % 2}`,
+  //     image1:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
+  //     image2:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
+  //     image3:`https://fuss10.elemecdn.com/1/34/19aa98b1fcb2781c4fba33d850549jpeg.jpeg`,
+  //     pass:0,
+  //     point:0,
+	// 	});
+	// }
+	// // 数据总数（模拟，真实从接口取）
+	// state.tableData.config.total = state.tableData.data.length;
 	setTimeout(() => {
 		state.tableData.config.loading = false;
 	}, 500);
